@@ -1,13 +1,13 @@
-//console.log("Darnell");
-
 const choice = ["Rock", "Paper", "Scissors"];
+let playerWinCount = 0;
+let computerWinCount = 0;
+let computerSelection = getComputerChoice();
+let gameState = "Win";
 
 function getComputerChoice() {
     const random = Math.floor(Math.random() * choice.length);
     return choice[random];
 }
-
-// console.log(getComputerChoice());
 
 function playRound(playerSelection, computerSelection) {
     let playerResult;
@@ -19,27 +19,65 @@ function playRound(playerSelection, computerSelection) {
     } else if ((playerSelection == "Rock" && computerSelection == "Scissors") || (playerSelection == "Paper" && computerSelection == "Rock") || (playerSelection == "Scissors" && computerSelection == "Paper")) {
         playerResult = "Win";
         dictator = "beats";
+        playerWinCount++;
+        if (scoreCheck()) {
+            finalMessage.textContent = 'You ' + gameState;
+            return;
+        }
     } else if ((computerSelection == "Rock" && playerSelection == "Scissors") || (computerSelection == "Paper" && playerSelection == "Rock") || (computerSelection == "Scissors" && playerSelection == "Paper")) {
         playerResult = "Lose";
         dictator = "loses to";
+        computerWinCount++;
+        if (scoreCheck()) {
+            finalMessage.textContent = 'You ' + gameState;
+            return;
+        }
     }
 
     let result = ("You " + playerResult + "! " + playerSelection + " " + dictator + " " + computerSelection);
-
     return result;
 }
 
-// let playerSelection = "Rock";
-let computerSelection = getComputerChoice();
+const results = document.getElementById('results');
+const finalMessage = document.getElementById('finalMessage');
+const roundResult = document.getElementById('roundResult');
+const playerScore = document.getElementById('playerScore');
+const computerScore = document.getElementById('computerScore');
 
-function game() {
-    for(let i = 0; i < 5; i++) {
-        playerSelection = prompt("Choose Rock, Paper, or Scissors: ");
-        computerSelection = getComputerChoice();
-        console.log(playRound(playerSelection, computerSelection));
+function scoreCheck() {
+    if (playerWinCount == 5) {
+        gameState = "Win!";
+        return true;
+    } else if (computerWinCount == 5) {
+        gameState = "Lose!";
+        return true;
     }
+    return false;
 }
 
-game();
-// console.log(game());
-// console.log(playRound(playerSelection, computerSelection));
+const rock = document.querySelector('#rock');
+rock.addEventListener('click', () => {
+    playerSelection = "Rock";
+    computerSelection = getComputerChoice();
+    playGame();
+});
+
+const paper = document.querySelector('#paper');
+paper.addEventListener('click', () => {
+    playerSelection = "Paper";
+    computerSelection = getComputerChoice();
+    playGame();
+});
+
+const scissors = document.querySelector('#scissors');
+scissors.addEventListener('click', () => {
+    playerSelection = "Scissors";
+    computerSelection = getComputerChoice();
+    playGame();
+});
+
+function playGame() {
+    playRound(playerSelection, computerSelection);
+    playerScore.textContent = playerWinCount;
+    computerScore.textContent = computerWinCount;
+}
